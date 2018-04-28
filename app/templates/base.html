@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>course-hunter</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,700" rel="stylesheet">
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'course-hunter-app.css' %}">
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Course Hunter</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav" id="activeToggle">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#label2">About</a></li>
+            <li><a href="#label3">Contact</a></li>
+          </ul>
+         
+          <ul class="nav navbar-nav navbar-right">
+              <li id="signup"><a href="#sign_up" >Signup  <i class="fa fa-user-plus"></i></a></li>
+              <li id="login"><a href="#">Login  <i class="fa fa-user"></i></a></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+    
+    {% block content %}{% endblock content %}
+    
+    <script type="text/javascript" src='{% static "jquery-1.12.1.min.js" %}'></script>
+    <script type="text/javascript" src='{% static "toggle-active.js" %}'></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script>   
+        $(document).ready(function() {
+            csrf_token = Cookies.get('csrftoken');
+            var login = true;
+            
+            $("#login").click(function() {    
+                console.log('login');
+                document.getElementById("login_signup_toggle").innerHTML = "Welcome, Please login.";
+//                document.getElementById('signup-form').id = 'login-form';
+                login = true;
+            });
+            $("#signup").click(function() {    
+                console.log('signup');
+    //            $("login_signup_toggle").html("Welcome, Please sign up.");
+                document.getElementById("login_signup_toggle").innerHTML = "Welcome, Please sign up.";
+//                document.getElementById('login-form').id = 'signup-form';
+                login = false;
+            });
+            $('#login-form').submit(function() {
+                if (login === true) {
+                    var email = $("#loginEmail").val()
+                    var password = $("#loginPassword").val()
+                    
+                    if (password === ""){
+                        alert("email or password should not be empty")
+                        return false;
+                    }
+                    
+                    $.ajax({ 
+                        dataType:'text',
+                        beforeSend: function(xhr, settings) {
+                           xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                        },
+                        data: {
+                            "email": email, 
+                            "password": password,
+                            "csrfmiddlewaretoken": '{{ csrf_token }}'
+                        },
+                        type: "POST", 
+                        url: "../login", 
+                        success: function(data){
+                            alert("Login Success");
+                            console.log(data);
+                            var obj = JSON.parse(data)
+//                            console.log(t.token)
+                            Cookies.set('token', obj.token);
+                        },
+                        error: function (xhr, ajaxOptions, thrownError){
+                            alert(thrownError);
+                        }
+                    });
+                    return false;
+                }else{
+                    var email = $("#loginEmail").val()
+                    var password = $("#loginPassword").val()
+                    console.log(email)
+                    console.log(password)
+                    if (password === ""){
+                        alert("email or password should not be empty")
+                        return false;
+                    }
+                    
+                    $.ajax({ 
+                        dataType:'text',
+                        beforeSend: function(xhr, settings) {
+                           xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                        },
+                        data: {
+                            "email": email, 
+                            "password": password,
+                            "csrfmiddlewaretoken": '{{ csrf_token }}'
+                        },
+                        type: "POST", 
+                        url: "http://127.0.0.1:8000/register", 
+                        success: function(data){
+                            alert("Create success");
+                        },
+                        error: function (xhr, ajaxOptions, thrownError){
+                            alert(thrownError);
+                        }
+                    });
+                    return false;
+                }
+              });
+            $('a[href="#logout"]').click(function(){
+    //            alert('Sign new href executed.');
+                    csrf_token = Cookies.get('csrftoken');
+                    $.ajax({ 
+                        dataType:'text',
+                        beforeSend: function(xhr, settings) {
+                            xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                            xhr.setRequestHeader("Content-type", "multipart/form-data");
+                            console.log(Cookies.get("token"));
+                            xhr.setRequestHeader('Authorization', "Token "+ Cookies.get("token"));
+                        },
+                        data: {
+                            "csrfmiddlewaretoken": '{{ csrf_token }}'
+                        },
+                        type: "POST", 
+                        url: "http://127.0.0.1:8000/logout", 
+                        success: function(data){
+                            alert("log out");
+                        },
+                        error: function (xhr, ajaxOptions, thrownError){
+                            alert(thrownError);
+                        }
+                    });
+                }); 
+        });
+    </script>
+    {% block afterbody %}
+    {% endblock afterbody %}
+</body>
+</html>

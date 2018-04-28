@@ -1,0 +1,57 @@
+.anchor{
+    position: absolute;
+    transform: translateY(-30vh);
+}
+
+body {
+    font-family: "Titillium+Web";
+}
+
+nav {
+    font-size: 14px;
+    color: #337ab7;
+}
+
+.navbar-inverse .navbar-brand:hover,
+.navbar-inverse .navbar-brand:focus {
+    color: #337ab7;
+}
+
+.navbar-inverse .navbar-brand{
+    font-size: 20px;
+    color: #337ab7;
+}
+
+h3 {
+    font-weight: 1000;
+    font-family: "Titllium+Web";
+}
+
+h4 {
+    font-weight: 1000;
+    font-family: "Titllium+Web";
+}
+
+.body-content{
+    font-size: 18px;
+}
+
+label{
+    font-size: 16px;
+}
+
+.jumbotron p{
+    margin-bottom: 0px;
+    font-size: 18px;
+}
+
+.jumbotron{
+/*    padding:20px 0 0px 0;*/
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+/*
+#third-paragraph{
+    padding-left: 30px;
+}*/
